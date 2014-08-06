@@ -12,6 +12,9 @@ clean:
 	-rm -rf dist/
 	-rm -rf build/
 
+cleancov:
+	-rm -rf htmlcov/
+
 cleantox:
 	-rm -rf .tox/
 
@@ -26,7 +29,7 @@ cleanpy:
 	-find . -type f -name "*.parse-index" -exec rm -f "{}" \;
 	-find . -type d -name "__pycache__" -exec rm -rf "{}" \;
 
-cleanall: clean cleanegg cleanpy
+cleanall: clean cleanegg cleanpy cleancov
 
 sdist: clean cleanegg cleanpy
 	python setup.py sdist
