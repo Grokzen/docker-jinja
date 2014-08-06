@@ -1,0 +1,5 @@
+exclude *.py
+include setup.py
+include README.md
+include requirements.txt
+include dev-requirements.txt

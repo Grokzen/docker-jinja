@@ -1,0 +1,9 @@
+{
+    "foo": "bar",
+    "asd": {
+        "dsa": true
+    },
+    "env": {
+        "OS": "windblows"
+    }
+}

@@ -52,3 +52,9 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# Custom
+__pycache__
+build/
+dist/
+docker_jinja.egg-info/
+*.pyc

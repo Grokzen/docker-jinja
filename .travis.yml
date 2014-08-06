@@ -1,0 +1,10 @@
+language: python
+
+python:
+  - "3.4"
+
+install:
+  - pip install -r dev-requirements.txt
+
+# Tox handles all setup and teardown of testenv
+script: tox

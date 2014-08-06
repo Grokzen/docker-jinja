@@ -1,0 +1,6 @@
+FROM {{ OS }}
+{% for n in range(5) %}
+RUN echo "{{ n }}"
+{%- endfor %}
+CMD ["/bin/bash"]
+{{ foo("bar") }}

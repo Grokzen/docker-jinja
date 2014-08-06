@@ -1,0 +1,9 @@
+{
+    "opa": "lopa",
+    "asd": {
+        "dsa": false
+    },
+    "datasources": [
+    	"/home/grok/code/docker-jinja/test/files/datasources/foo.py"
+    ]
+}
