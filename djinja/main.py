@@ -25,6 +25,8 @@ class Core(object):
         """
         self.args = cli_args
 
+        Log.debug("Cli args: {}".format(self.args))
+
         self.default_config_files = [
             "/etc/dj.yaml",
             "/etc/dj.json",
@@ -78,8 +80,6 @@ class Core(object):
         # Find all contrib files and add them to datasources to load
         ds.extend([getattr(contrib, c).__file__ for c in dir(contrib) if not c.startswith("_")])
 
-        Log.debug("Datasources to load: {}".format(ds))
-
         # Load all specefied datasource files
         for datasource_file in ds:
             if not os.path.exists(datasource_file):
@@ -91,6 +91,7 @@ class Core(object):
                 # Append to sys path so we can import the python file
                 sys.path.insert(0, p)
                 datasource_path = os.path.splitext(os.path.basename(datasource_file))[0]
+                Log.debug("{0}".format(datasource_path))
 
                 # Import python file but do nothing with it because all datasources should
                 #  handle and register themself to jinja.
@@ -105,11 +106,8 @@ class Core(object):
                         method_name = method.replace("_global_", "")
                         self._attach_function("globals", getattr(i, method), method_name)
             except ImportError as ie:
-                print("cannot load datasource. {}".format(ie))
+                Log.critical("cannot load datasource. {}".format(ie))
                 raise ie
-            except Exception as e:
-                print("Exception: {}".format(e))
-                raise e
             finally:
                 # Clean out path to avoid issue
                 sys.path.remove(p)
@@ -127,8 +125,11 @@ class Core(object):
         # Update the jinja environment with all custom functions & filters
         self._update_env(template.environment)
 
+        env_vars = self.config.get("env", {})
+        Log.debug("env_vars: {}".format(env_vars))
+
         Log.info("rendering Dockerfile...")
-        out_data = template.render(**self.config.get("env", {}))
+        out_data = template.render(**env_vars)
 
         Log.debug("\n******\nWriting to file\n*******")
         Log.debug(out_data)
@@ -140,14 +141,11 @@ class Core(object):
             Log.info("Writing to outfile...")
             stream.write(out_data)
 
-    def _attach_function(self, attr, func, name=None):
+    def _attach_function(self, attr, func, name):
         """
         Register a function so it can be used within Jinja
         """
         Log.debug("Attaching function to jinja : {} : {} : {}".format(attr, func.__name__, name))
-
-        if name is None:
-            name = func.__name__
 
         global _local_env
         _local_env[attr][name] = func

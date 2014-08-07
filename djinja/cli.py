@@ -41,3 +41,4 @@ def main():
     import djinja.main
     c = djinja.main.Core(args)
     c.main()
+    return c

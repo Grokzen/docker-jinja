@@ -1,11 +1,19 @@
 help:
 	@echo "Please use 'make <target>' where <target> is one of"
+	@echo "  run-coverage    runs tox then coverage report locally"
 	@echo "  clean           remove temporary files created by build tools"
 	@echo "  cleantox        remove files created by tox"
 	@echo "  cleanegg        remove temporary files created by build tools"
 	@echo "  cleanpy         remove temporary python files"
 	@echo "  cleanall        all the above + tmp files from development tools"
 	@echo "  sdist           make a source distribution"
+
+run-coverage:
+	coverage erase
+	tox
+	coverage combine
+	coverage report
+
 
 clean:
 	-rm -f MANIFEST

@@ -3,7 +3,7 @@
 # python std lib
 import logging
 
-# ed package imports
+# djinja package imports
 import djinja
 from djinja import _local_env
 from djinja.main import Core
@@ -124,11 +124,69 @@ class TestCore(object):
             c.load_user_specefied_config_file()
         assert str(ex.value).startswith("Data tree to merge must be of dict type")
 
-    def test_handle_datasources(self):
+    def test_handle_datasources(self, tmpdir):
         """
         Test that loading of datasources work and that they are usable.
         """
-        pass
+        input = tmpdir.join("Dockerfile.jinja")
+        input.write("{{ 'foo'|upper }} : {{ lower('BAR') }}")
+
+        output = tmpdir.join("Dockerfile")
+        dsfile = tmpdir.join("_datasource.py")
+        dsfile.write("""
+def _filter_upper(string):
+    return string.upper()
+
+def _global_lower(string):
+    return string.lower()
+        """)
+
+        c = Core({
+            "--dockerfile": str(input),
+            "--outfile": str(output),
+            "--datasource": [str(dsfile)]
+        })
+        c.main()
+        assert output.read() == "FOO : bar"
+
+    def test_fail_load_non_existing_datasource(self, tmpdir):
+        """
+        Prove a path to a datasource that do not exists and try to load it
+        and look for exception to be raised.
+        """
+        input = tmpdir.join("Dockerfile.jinja")
+        output = tmpdir.join("Dockerfile")
+        c = Core({
+            "--dockerfile": str(input),
+            "--outfile": str(output),
+            "--datasource": ["/tmp/foobar/barfoo"]
+        })
+        with pytest.raises(Exception) as ex:
+            c.main()
+        assert str(ex.value).startswith("Unable to load datasource file : /tmp/foobar/barfoo")
+
+    def test_load_datasource_import_error(self, tmpdir):
+        """
+        Provide a datasource file that will raise ImportError. Ensure log msg
+        and that exception was raised.
+
+        We fake the ImportError exception by manually raising it from inside
+        the datasource file to make it consistent.
+        """
+        input = tmpdir.join("Dockerfile.jinja")
+        input.write("foobar")
+        output = tmpdir.join("Dockerfile")
+        dsfile = tmpdir.join("_datasource_.py")
+        dsfile.write("""
+raise ImportError("foobar")
+        """)
+        c = Core({
+            "--dockerfile": str(input),
+            "--outfile": str(output),
+            "--datasource": [str(dsfile)]
+        })
+        with pytest.raises(ImportError):
+            c.main()
 
     def test_process_dockerfile(self, tmpdir):
         """

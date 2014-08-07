@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# ed package imports
+# djinja package imports
 from djinja.conftree import ConfTree
 
 # 3rd party imports
@@ -16,6 +16,11 @@ class TestConfTree(object):
         c = ConfTree()
         assert c.config_files == []
         assert c.tree == {}
+
+        # Only lists are allowed to be passed in
+        with pytest.raises(Exception) as ex:
+            c = ConfTree(config_files={"foo": "bar"})
+        assert str(ex.value).startswith("config files must be a list of items that can be read from FS")
 
     def test_store_config_files(self):
         """
