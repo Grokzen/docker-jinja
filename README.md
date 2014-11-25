@@ -14,6 +14,10 @@ Installation
 
 Clone this repo. Navigate to root of repo. Run `pip install .` to install.
 
+All runtime python dependencies can be found in `requirements.txt`.
+
+To install all development dependencies run `pip install -r dev-requirements.txt`.
+
 
 
 Quickstart guide
