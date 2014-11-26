@@ -1,5 +1,22 @@
 # -*- coding: utf-8 -*-
 
+__docopt__ = """
+Usage:
+  dj -d DOCKERFILE -o OUTFILE [-s DSFILE]... [-e ENV]... [-c CONFIGFILE]
+     [-v ...] [-q] [-h] [--version]
+
+Options:
+  -c CONFIGFILE --config CONFIGFILE       file containing global config for dj
+  -s DSFILE --datasource DSFILE           file that should be loaded as a datasource
+  -d DOCKERFILE --dockerfile DOCKERFILE   dockerfile to render
+  -e ENV --env ENV                        variable with form "key=value" that should be used in the rendering
+  -o OUTFILE --outfile OUTFILE            output result to file
+  -h --help                               show this help
+  -v --verbosity                          verbosity level of logging messages. ( -v == CRITICAL )  ( -vvvvv == DEBUG )
+  -V --version                            display the version number and exit
+  -q --quiet                              silence all logging output no matter what
+"""
+
 
 def main():
     """
@@ -15,23 +32,6 @@ def main():
     """
     import djinja
     from docopt import docopt
-
-    __docopt__ = """
-    Usage:
-      dj -d DOCKERFILE -o OUTFILE [-s DSFILE]... [-e ENV]... [-c CONFIGFILE]
-         [-v ...] [-q] [-h] [--version]
-
-    Options:
-      -c CONFIGFILE --config CONFIGFILE       file containing global config for dj
-      -s DSFILE --datasource DSFILE           file that should be loaded as a datasource
-      -d DOCKERFILE --dockerfile DOCKERFILE   dockerfile to render
-      -e ENV --env ENV                        variable with form "key=value" that should be used in the rendering
-      -o OUTFILE --outfile OUTFILE            output result to file
-      -h --help                               show this help
-      -v --verbosity                          verbosity level of logging messages. ( -v == CRITICAL )  ( -vvvvv == DEBUG )
-      -V --version                            display the version number and exit
-      -q --quiet                              silence all logging output no matter what
-        """
 
     args = docopt(__docopt__, version=djinja.__version__)
 
