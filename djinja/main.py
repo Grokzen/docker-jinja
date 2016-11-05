@@ -14,7 +14,7 @@ from djinja.conftree import ConfTree
 from jinja2 import Template
 
 
-Log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class Core(object):
@@ -25,7 +25,7 @@ class Core(object):
         """
         self.args = cli_args
 
-        Log.debug("Cli args: {}".format(self.args))
+        log.debug("Cli args: {}".format(self.args))
 
         self.default_config_files = [
             "/etc/dj.yaml",
@@ -36,13 +36,13 @@ class Core(object):
             os.path.join(os.getcwd(), ".dj.json"),
         ]
 
-        Log.debug("DEFAULT_CONFIG_FILES: {}".format(self.default_config_files))
+        log.debug("DEFAULT_CONFIG_FILES: {}".format(self.default_config_files))
 
         # Load all config files into unified config tree
-        Log.debug("Building config...")
+        log.debug("Building config...")
         self.config = ConfTree(self.default_config_files)
         self.config.load_config_files()
-        Log.debug("Config building is done")
+        log.debug("Config building is done")
 
     def parse_env_vars(self):
         """
@@ -64,7 +64,7 @@ class Core(object):
         """
         user_specefied_config_file = self.args.pop("--config", None)
         if user_specefied_config_file:
-            Log.debug("Loading user specefied config file : {}".format(user_specefied_config_file))
+            log.debug("Loading user specefied config file : {}".format(user_specefied_config_file))
             self.config.load_config_file(user_specefied_config_file)
 
     def handle_data_sources(self):
@@ -91,7 +91,7 @@ class Core(object):
                 # Append to sys path so we can import the python file
                 sys.path.insert(0, p)
                 datasource_path = os.path.splitext(os.path.basename(datasource_file))[0]
-                Log.debug("{0}".format(datasource_path))
+                log.debug("{0}".format(datasource_path))
 
                 # Import python file but do nothing with it because all datasources should
                 #  handle and register themself to jinja.
@@ -106,7 +106,7 @@ class Core(object):
                         method_name = method.replace("_global_", "")
                         self._attach_function("globals", getattr(i, method), method_name)
             except ImportError as ie:
-                Log.critical("cannot load datasource. {}".format(ie))
+                log.critical("cannot load datasource. {}".format(ie))
                 raise ie
             finally:
                 # Clean out path to avoid issue
@@ -119,36 +119,36 @@ class Core(object):
         source_dockerfile = self.args["--dockerfile"]
 
         with open(source_dockerfile, "r") as stream:
-            Log.info("Reading source file...")
+            log.info("Reading source file...")
             template = Template(stream.read())
 
         # Update the jinja environment with all custom functions & filters
         self._update_env(template.environment)
 
         context = self.config.get("env", {})
-        Log.info("Rendering context")
+        log.info("Rendering context")
 
         for k, v in context.items():
-            Log.info("  * %s: %s" % (k, v))
+            log.info("  * %s: %s" % (k, v))
 
-        Log.info("Rendering Dockerfile...")
+        log.info("Rendering Dockerfile...")
         out_data = template.render(**context)
 
-        Log.debug("\n******\nWriting to file\n*******")
-        Log.debug(out_data)
+        log.debug("\n******\nWriting to file\n*******")
+        log.debug(out_data)
 
         if "--outfile" not in self.args:
             raise Exception("missing key '--outfile' in cli_args. Could not write to output file.")
 
         with open(self.args["--outfile"], "w") as stream:
-            Log.info("Writing to outfile...")
+            log.info("Writing to outfile...")
             stream.write(out_data)
 
     def _attach_function(self, attr, func, name):
         """
         Register a function so it can be used within Jinja
         """
-        Log.debug("Attaching function to jinja : {} : {} : {}".format(attr, func.__name__, name))
+        log.debug("Attaching function to jinja : {} : {} : {}".format(attr, func.__name__, name))
 
         global _local_env
         _local_env[attr][name] = func
@@ -174,4 +174,4 @@ class Core(object):
 
         self.process_dockerfile()
 
-        Log.info("Done... Bye :]")
+        log.info("Done... Bye :]")

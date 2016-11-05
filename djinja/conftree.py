@@ -6,7 +6,7 @@ import yaml
 import json
 import logging
 
-Log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class ConfTree(object):
@@ -22,7 +22,7 @@ class ConfTree(object):
             try:
                 self.load_config_file(config_file)
             except Exception:
-                Log.debug("unable to load default config file : {}".format(config_file))
+                log.debug("unable to load default config file : {}".format(config_file))
                 pass
 
     def load_config_file(self, config_file):
@@ -45,7 +45,7 @@ class ConfTree(object):
             except Exception:
                 raise Exception("Unable to load data as yaml or json from config file : {}".format(config_file))
 
-        Log.debug("Loading default data from default config file : {}".format(config_file))
+        log.debug("Loading default data from default config file : {}".format(config_file))
 
         # If data was loaded into python datastructure then load it into the config tree
         self.merge_data_tree(data_tree)
