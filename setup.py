@@ -10,7 +10,7 @@ long_description = open(os.path.join(os.path.dirname(__file__), 'README.md')).re
 
 settings.update(
     name='docker-jinja',
-    version='0.1.0',
+    version='1.0.0',
     description='Extend your dockerfiles with Jinja2 syntax to to more awesome dockerfiles',
     long_description=long_description,
     author='Johan Andersson',

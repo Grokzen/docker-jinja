@@ -9,7 +9,7 @@ import os
 import logging
 import logging.config
 
-__version__ = "14.07-dev"
+__version__ = "1.0.0"
 __author__ = 'Grokzen <Grokzen@gmail.com>'
 
 # Set to True to have revision from Version Control System in version string
