@@ -38,6 +38,8 @@ class Core(object):
 
         log.debug("DEFAULT_CONFIG_FILES: {}".format(self.default_config_files))
 
+        self.outfile = ""
+
         # Load all config files into unified config tree
         log.debug("Building config...")
         self.config = ConfTree(self.default_config_files)
@@ -138,9 +140,12 @@ class Core(object):
         log.debug(out_data)
 
         if "--outfile" not in self.args:
-            raise Exception("missing key '--outfile' in cli_args. Could not write to output file.")
+            log.debug("No --outfile <FILE> was specified. Defaulting to Dockerfile")
+            self.outfile = "Dockerfile"
+        else:
+            self.outfile = self.args['--outfile']
 
-        with open(self.args["--outfile"], "w") as stream:
+        with open(self.outfile, "w") as stream:
             log.info("Writing to outfile...")
             stream.write(out_data)
 
