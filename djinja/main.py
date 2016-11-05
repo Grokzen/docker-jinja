@@ -54,7 +54,7 @@ class Core(object):
             if len(s) != 2 or (len(s[0]) == 0 or len(s[1]) == 0):
                 raise Exception("var '{0}' is not of format 'key=value'".format(var))
             vars[s[0]] = s[1]
-        self.config.merge_data_tree(vars)
+        self.config.merge_data_tree({"env": vars})
 
     def load_user_specefied_config_file(self):
         """
@@ -125,11 +125,14 @@ class Core(object):
         # Update the jinja environment with all custom functions & filters
         self._update_env(template.environment)
 
-        env_vars = self.config.get("env", {})
-        Log.debug("env_vars: {}".format(env_vars))
+        context = self.config.get("env", {})
+        Log.info("Rendering context")
 
-        Log.info("rendering Dockerfile...")
-        out_data = template.render(**env_vars)
+        for k, v in context.items():
+            Log.info("  * %s: %s" % (k, v))
+
+        Log.info("Rendering Dockerfile...")
+        out_data = template.render(**context)
 
         Log.debug("\n******\nWriting to file\n*******")
         Log.debug(out_data)
