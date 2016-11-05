@@ -23,7 +23,7 @@ settings.update(
         'docopt==0.6.2',
     ],
     license="MIT",
-    url='https.//github.com/Grokzen/docker-jinja',
+    url='https://github.com/Grokzen/docker-jinja',
     classifiers=(
         #  As from https://pypi.python.org/pypi?%3Aaction=list_classifiers
         # 'Development Status :: 1 - Planning',
@@ -38,10 +38,7 @@ settings.update(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Environment :: Console',
-        'Environment :: Docker',
         'Operating System :: POSIX',
-        'Topic :: Docker',
-        'Topic :: Dockerfile',
     )
 )
 
