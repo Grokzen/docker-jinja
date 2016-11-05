@@ -12,41 +12,58 @@ Build status: [![Build Status](https://travis-ci.org/Grokzen/docker-jinja.svg?br
 Installation
 ------------
 
-Clone this repo. Navigate to root of repo. Run `pip install .` to install.
+Install from pypi with `pip install docker-jinja`
 
-All runtime python dependencies can be found in `requirements.txt`.
-
-To install all development dependencies run `pip install -r dev-requirements.txt`.
+To install in development mode, first navigate to root of project and then run `pip install -r dev-requirements.txt; pip install -e .`. It is recommended to install inside a virtualenv to avoid conflicts with dependencies.
 
 
 
 Quickstart guide
 ----------------
 
-Install package into your system python or into a virtualenv (This is recommended way)
-
-Create a Dockerfile.jinja that contains all regular Dockerfile build steps and the jinja syntax
-
-Run `dj` command. For example
+Create a Dockerfile.jinja that contains all regular Dockerfile build steps and the jinja syntax. For exapmle:
 
 ```
-dj --dockerfile Dockerfile.jinja --outfile Dockerfile --env OS=ubuntu:12.04 --datasource test-datasource.py --config test-config.json
+$ cat Dockerfile.jinja 
+FROM {{ OS }}
+MAINTAINER {{ MAINTAINER }} 
+
+ARG {{ ARG1 }}
 ```
 
-Run regular Docker build/run command as usual
+Run `dj` command. For example:
+
+```
+dj --dockerfile Dockerfile.jinja --outfile Dockerfile --env OS=ubuntu:12.04 --env MAINTAINER=Grokzen --env ARG1=foobar --config test-config.json
+```
+
+And you will get the output:
+
+```
+FROM ubuntu:12.04
+MAINTAINER Grokzen
+
+ARG foobar
+```
 
 
+Configuration files
+-------------------
 
-Supported python version
-------------------------
+It is possible to create predefined configuration files with settings, enviroment variables and datasources.
 
-- 2.7
-- 3.3
-- 3.4
+`dj` tries to load the following configuration files in the following order:
 
-Python 3.2 will not be supported because Jinja2 is only supported on python >= 3.3 (Reference: http://jinja.pocoo.org/docs/intro/). If other rendering engines would be supported then python 3.2 can be supported for those engines.
+- /etc/dj.yaml
+- /etc/dj.json
+- ~/.dj.yaml
+- ~/.dj.json
+- $CWD + '.dj.yaml'
+- $CWD + '.dj.json'
 
-Python 2.6 will not be supported.
+YAML is the file format to prefer but json is also supported.
+
+Currently it is not possible to automatically load a config file next to the source Dockerfile.
 
 
 
@@ -119,32 +136,21 @@ RUN echo 'OPA'
 
 
 
-Configuration files
--------------------
-
-It is possible to create predefined configuration files with settings, enviroment variables and datasources.
-
-`dj` tries to load the following configuration files in the following order:
-
-- /etc/dj.yaml
-- /etc/dj.json
-- ~/.dj.yaml
-- ~/.dj.json
-- $CWD + '.dj.yaml'
-- $CWD + '.dj.json'
-
-YAML is the file format to prefer but json is also supported.
-
-Currently it is not possible to automatically load a config file next to the source Dockerfile.
-
-
-
 Other rendering engines
 -----------------------
 
-Currently only Jinja2 is supported as rendering engine. 
+Currently only Jinja2 is supported as rendering engine
 
-In the future the possibility to add new engines will be added.
+
+
+Supported python version
+------------------------
+
+- 2.7
+- 3.3
+- 3.4
+
+Python 3.2 will not be supported because Jinja2 is only supported on python >= 3.3 (Reference: http://jinja.pocoo.org/docs/intro/). If other rendering engines would be supported then python 3.2 can be supported for those engines.
 
 
 
